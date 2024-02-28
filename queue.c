@@ -255,64 +255,54 @@ void q_sort(struct list_head *head, bool descend)
     merge(head, &left, &right, descend);
 }
 
-/* Remove every node which has a node with a strictly less value anywhere to
- * the right side of it */
-int q_ascend(struct list_head *head)
+int process_list(struct list_head *head, bool ascend)
 {
     if (!head || list_empty(head)) {
         return 0;
     }
 
-    element_t *min_entry = list_entry(head->prev, element_t, list);
+    element_t *extreme_entry = list_entry(head->prev, element_t, list);
     int result = 1;
+    struct list_head *current = head->prev->prev;
 
-    for (struct list_head *current = head->prev->prev; current != head;) {
+    while (current != head) {
         element_t *current_entry = list_entry(current, element_t, list);
         struct list_head *prev = current->prev;
-        if (strcmp(current_entry->value, min_entry->value) >= 0) {
+
+        bool condition =
+            ascend ? (strcmp(current_entry->value, extreme_entry->value) >= 0)
+                   : (strcmp(current_entry->value, extreme_entry->value) <= 0);
+
+        if (condition) {
             list_del_init(current);
             q_release_element(current_entry);
         } else {
             result++;
-            min_entry = current_entry;
+            extreme_entry = current_entry;
         }
         current = prev;
     }
 
     return result;
+}
+
+/* Remove every node which has a node with a strictly less value anywhere to
+ * the right side of it */
+int q_ascend(struct list_head *head)
+{
+    return process_list(head, true);
 }
 
 /* Remove every node which has a node with a strictly greater value anywhere to
  * the right side of it */
 int q_descend(struct list_head *head)
 {
-    if (!head || list_empty(head)) {
-        return 0;
-    }
-
-    element_t *max_entry = list_entry(head->prev, element_t, list);
-    int result = 1;
-
-    for (struct list_head *current = head->prev->prev; current != head;) {
-        element_t *current_entry = list_entry(current, element_t, list);
-        struct list_head *prev = current->prev;
-        if (strcmp(current_entry->value, max_entry->value) <= 0) {
-            list_del_init(current);
-            q_release_element(current_entry);
-        } else {
-            result++;
-            max_entry = current_entry;
-        }
-        current = prev;
-    }
-
-    return result;
+    return process_list(head, false);
 }
 
 /* Merge all the queues into one sorted queue, which is in ascending/descending
  * order */
 int q_merge(struct list_head *head, bool descend)
 {
-    // https://leetcode.com/problems/merge-k-sorted-lists/
     return 0;
 }
