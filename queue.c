@@ -43,14 +43,18 @@ bool q_insert_head(struct list_head *head, char *s)
         return false;
     }
     element_t *new_elem = malloc(sizeof(element_t));
+    int s_len = strlen(s);
+
     if (!new_elem) {
         return false;  // Allocation failed
     }
-    new_elem->value = strdup(s);  // Copy string
+    new_elem->value = (char *) malloc((s_len + 1) * sizeof(char));
     if (!new_elem->value) {
         free(new_elem);
         return false;  // String copy failed
     }
+
+    strncpy(new_elem->value, s, (s_len + 1));
     list_add(&new_elem->list, head);
     return true;
 }
