@@ -304,5 +304,20 @@ int q_descend(struct list_head *head)
  * order */
 int q_merge(struct list_head *head, bool descend)
 {
-    return 0;
+    if (!head || list_empty(head))
+        return 0;
+    else if (list_is_singular(head))
+        return list_entry(head->next, queue_contex_t, chain)->size;
+    queue_contex_t *target = list_entry(head->next, queue_contex_t, chain);
+    queue_contex_t *current = NULL;
+    list_for_each_entry (current, head, chain) {
+        if (current == target)
+            continue;
+        list_splice_init(current->q, target->q);
+        target->size = target->size + current->size;
+        current->size = 0;
+    }
+    q_sort(target->q, descend);
+
+    return target->size;
 }
