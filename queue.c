@@ -165,18 +165,9 @@ void q_swap(struct list_head *head)
 
     struct list_head *current = head->next;
     while (current != head && current->next != head) {
-        struct list_head *next = current->next;
-        struct list_head *nextNext = next->next;
-
-        next->next = current;
-        next->prev = current->prev;
-        current->prev->next = next;
-        current->next = nextNext;
-        nextNext->prev = next;
-        if (current->next != head) {
-            current->next->prev = current;
-        }
-        current = nextNext;
+        struct list_head *prev = current->prev;
+        list_move(current->next, prev);
+        current = current->next;
     }
 }
 
