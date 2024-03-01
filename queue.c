@@ -71,7 +71,7 @@ bool q_insert_tail(struct list_head *head, char *s)
 /* Remove an element from the head of the queue */
 element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
 {
-    if (!head || head->next == head) {
+    if (!head || list_empty(head)) {
         return NULL;  // Queue is empty or NULL
     }
     struct list_head *first = head->next;
@@ -87,7 +87,7 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
 /* Remove an element from the tail of the queue */
 element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
 {
-    if (!head || head->prev == head) {
+    if (!head || list_empty(head)) {
         return NULL;  // Queue is empty or NULL
     }
     return q_remove_head(head->prev->prev, sp, bufsize);
@@ -109,7 +109,7 @@ int q_size(struct list_head *head)
 
 bool q_delete_mid(struct list_head *head)
 {
-    if (!head || head->next == head || head->next->next == head) {
+    if (!head || list_empty(head) || list_is_singular(head)) {
         return false;  // Empty or single element queue, nothing to delete
     }
 
@@ -129,7 +129,7 @@ bool q_delete_mid(struct list_head *head)
 /* Delete all nodes that have duplicate string */
 bool q_delete_dup(struct list_head *head)
 {
-    if (!head || list_empty(head)) {
+    if (!head || list_empty(head) || list_is_singular(head)) {
         return false;  // Empty queue, nothing to do
     }
 
@@ -163,7 +163,7 @@ bool q_delete_dup(struct list_head *head)
 /* Swap every two adjacent nodes */
 void q_swap(struct list_head *head)
 {
-    if (!head || head->next == head || head->next->next == head) {
+    if (!head || list_empty(head) || list_is_singular(head)) {
         return;  // Empty or single element queue, nothing to swap
     }
 
@@ -178,7 +178,7 @@ void q_swap(struct list_head *head)
 /* Reverse elements in queue */
 void q_reverse(struct list_head *head)
 {
-    if (!head || head->next == head || head->next->next == head) {
+    if (!head || list_empty(head) || list_is_singular(head)) {
         return;  // Empty or single element queue, nothing to reverse
     }
 
@@ -234,7 +234,7 @@ void merge(struct list_head *head,
 /* Sort elements of queue in ascending/descending order */
 void q_sort(struct list_head *head, bool descend)
 {
-    if (!head || list_empty(head) || head->next->next == head) {
+    if (!head || list_empty(head) || list_is_singular(head)) {
         return;
     }
 
